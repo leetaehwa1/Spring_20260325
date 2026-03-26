@@ -1,6 +1,6 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,9 +27,27 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <h1>안녕?</h1>
-        <button @click="fnTest">테스트!</button>
-
+         <div>
+            <table>
+                <tr>
+                    <th>학번</th>
+                    <th>이름</th>
+                    <th>학과</th>
+                    <th>학년</th>
+                    <th>성별</th>
+                    <th>삭제</th>
+                </tr>
+                <tr v-for="item in list">
+                    <td>{{item.stuNo}}</td>
+                    <td>{{item.stuName}}</td>
+                    <td>{{item.stuDept}}</td>
+                    <td>{{item.stuGrade}}</td>
+                    <td>{{item.stuGender}}</td>
+                    <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
+                </tr>
+            </table>
+         </div>
+         <button @click="fnStu">조회</button>
     </div>
 </body>
 </html>
@@ -39,24 +57,42 @@
         data() {
             return {
                 // 변수 - (key : value)
+                list : [],
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnTest: function () {
+            // 학생 조회
+            fnStu: function () {
                 let self = this;
                 let param = {
-                    stuNo : "12345678",
-                    test : "1234",
-                    name : "홍길동",
                 };
                 $.ajax({
-                    url: "http://localhost:8080/test.dox",
+                    url: "http://localhost:8080/stu-list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
+                        self.list = data.list;
+                    }
+                });
+            },
+            // 학생 삭제
+            fnRemove: function (stuNo) {
+                let self = this;
+                let param = {
+                    stuNo : stuNo
+                };
+                $.ajax({
+                    url: "http://localhost:8080/stu-remove.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        alert(data.message);
+                        self.fnStu();
                     }
                 });
             }
@@ -64,6 +100,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnStu();
         }
     });
 

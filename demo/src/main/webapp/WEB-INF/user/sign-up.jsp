@@ -27,6 +27,19 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+         <div>
+            <label>아이디 : <input v-model="userId"></label>
+            <button @click="fnCheck()">중복체크</button>
+         </div>
+         <div>
+            <label>비밀번호 : <input type="password" v-model="pwd"></label>
+         </div>
+         <div>
+            <label>이름 : <input v-model="userName"></label>
+         </div>
+         <div>
+            <button @click="fnJoin()">가입</button>
+        </div>
     </div>
 </body>
 </html>
@@ -36,20 +49,41 @@
         data() {
             return {
                 // 변수 - (key : value)
+                userId : "",
+                pwd : "",
+                userName : "",
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnCheck : function () {
                 let self = this;
-                let param = {};
+                let param = {
+                    userId : self.userId
+                };
                 $.ajax({
-                    url: "http://localhost:8080/",
+                    url: "http://localhost:8080/check.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        alert(data.message);
+                    }
+                });
+            },fnJoin : function () {
+                let self = this;
+                let param = {
+                    userId : self.userId,
+                    pwd : self.pwd,
+                    userName : self.userName,
+                };
+                $.ajax({
+                    url: "http://localhost:8080/join.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert(data.message);
                     }
                 });
             }

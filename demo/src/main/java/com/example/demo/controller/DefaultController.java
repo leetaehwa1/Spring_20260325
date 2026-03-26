@@ -30,6 +30,8 @@ public class DefaultController {
 		return "/test"; 
 	}
 	
+	
+	
 	// 데이터 리턴해주는 주소 ajax 사용할 때.
 	@RequestMapping(value = "/default.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody 
@@ -46,15 +48,11 @@ public class DefaultController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 //		DefaultService obj = new DefaultService();
-		defaultService.getUserList();
-		
-		System.out.println("test.dox 호출 됨!");
-		System.out.println(map);
-		
-		resultMap.put("result", "sucess");
-		resultMap.put("Hello", "Word");
+		resultMap = defaultService.getUserList();
 		
 		return new Gson().toJson(resultMap); 
 	}
+	
+	
 	
 }
