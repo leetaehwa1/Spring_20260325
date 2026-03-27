@@ -17,9 +17,15 @@ import com.google.gson.Gson;
 public class StudentController {
 	@Autowired
 	StudentService studentService;
+	
 	@RequestMapping("/stu-list.do") 
 	public String stu(Model model) throws Exception{
 		return "/student/stu-list"; 
+	}
+	
+	@RequestMapping("/stu-add.do") 
+	public String add(Model model) throws Exception{
+		return "/student/stu-add"; 
 	}
 	
 	@RequestMapping(value = "/stu-list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -28,7 +34,7 @@ public class StudentController {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
 //		DefaultService obj = new DefaultService();
-		resultMap = studentService.getStuList();
+		resultMap = studentService.getStuList(map);
 		
 		return new Gson().toJson(resultMap); 
 	}
@@ -44,5 +50,26 @@ public class StudentController {
 		return new Gson().toJson(resultMap); 
 	}
 	
+	@RequestMapping(value = "/stu-check.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String stuCheck(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+//		DefaultService obj = new DefaultService();
+		resultMap = studentService.checkStudent(map);
+		
+		return new Gson().toJson(resultMap); 
+	}
+	
+	@RequestMapping(value = "/stu-add.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String add(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		System.out.println(map);
+//		DefaultService obj = new DefaultService();
+		resultMap = studentService.addStudent(map);
+		
+		return new Gson().toJson(resultMap); 
+	}
 	
 }

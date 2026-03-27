@@ -9,8 +9,6 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="/js/page-change.js"></script>
-
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -29,6 +27,29 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+         <table>
+             <tr>
+                <th>게시물 번호</th>
+                <th>아이디</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>조회수</th>
+                <th>게시물 종류</th>
+                <th>작성일</th>
+                <th>수정일</th>
+            </tr>
+
+            <tr v-for="item in list">
+                <td>{{item.boardno}}</td>
+                <td>{{item.userid}}</td>
+                <td>{{item.title}}</td>
+                <td>{{item.contents}}</td>
+                <td>{{item.cnt}}</td>
+                <td>{{item.kind}}</td>
+                <td>{{item.cdatetime}}</td>
+                <td>{{item.udatetime}}</td>
+            </tr>
+         </table>
     </div>
 </body>
 </html>
@@ -38,6 +59,7 @@
         data() {
             return {
                 // 변수 - (key : value)
+                list: [],
             };
         },
         methods: {
@@ -46,12 +68,12 @@
                 let self = this;
                 let param = {};
                 $.ajax({
-                    url: "http://localhost:8080/",
+                    url: "http://localhost:8080/board-list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                    self.list = data.list;
                     }
                 });
             }
@@ -59,6 +81,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            self.fnList();
         }
     });
 
