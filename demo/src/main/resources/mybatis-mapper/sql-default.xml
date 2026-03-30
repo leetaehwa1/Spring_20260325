@@ -3,8 +3,28 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.example.demo.mapper.DefaultMapper">
-	<select id="selectUserList" resultType="com.example.demo.model.User">
+	<!--여러 개 검색-->
+	<select id="selectUserList" parameterType="hashmap" resultType="com.example.demo.model.User">
 		SELECT * 
 		FROM TBL_USER
 	</select>
+	<!--한 개 검색-->
+	<select id="selectUser" parameterType="hashmap" resultType="com.example.demo.model.User">
+	
+	</select>
+	
+	<!--삽입-->
+	<insert id="insertUser" parameterType="hashmap">
+	
+	</insert>
+	
+	<!--삭제-->
+	<delete id="deleteUser" parameterType="hashmap">
+	
+	</delete>
+	
+	<!--수정-->
+	<update id="updateUser" parameterType="hashmap">
+	
+	</update>
 </mapper>

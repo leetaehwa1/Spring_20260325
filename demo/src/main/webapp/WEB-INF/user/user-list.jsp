@@ -10,13 +10,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+
     <style>
-         body{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
         table, tr, td, th{
             border : 1px solid black;
             border-collapse: collapse;
@@ -34,31 +29,30 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div>
-            검색어 : 
-            <input v-model="keyword">
-            <button @click="fnList">검색</button>
-        </div> 
-        <table>
-             <tr>
-                <th>게시물 번호</th>
+         <table>
+            <tr>
+                <th>선택</th>
                 <th>아이디</th>
-                <th>제목</th>
-                <th>내용</th>
-                <th>조회수</th>
-                <th>작성일</th>
-            </tr>
+                <th>이름</th>
+                <th>성별</th>
+                <th>삭제</th>
 
-            <tr v-for="item in list">
-                <td>{{item.boardNo}}</td>
-                <td>{{item.userId}}</td>
-                <td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
-                <td>{{item.contents}}</td>
-                <td>{{item.cnt}}</td>
-                <td>{{item.cdatetime}}</td>
             </tr>
+            <tr v-for="item in list">
+                <td><input type="radio" name="user" v-model="selectUserId" :value="item.userId"></td>
+                <td>{{item.userId}}</td>
+                <td>{{item.userName}}</td>
+                <td>
+                    <span v-if="item.gender =='M'">남자</span>
+                    <span v-else-if="item.gender =='F'">여자</span>
+                    <span v-else>비공개</span>
+                </td>
+                <td>
+                    <button @click="fnRemove(item.userId)">삭제</button>
+                </td>
+            </tr>   
          </table>
-         <a href="/board/board-add.do"><button>글쓰기</button></a>
+         <button @click="fnDelete(selectUserId)">삭제</button>
     </div>
 </body>
 </html>
@@ -68,48 +62,63 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list: [],
-                keyword : "",
-                boardNo : ""
+                list : [],
+                selectUserId : "",
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnGetList: function () {
                 let self = this;
-                let param = {
-                    keyword : self.keyword,
-
-                };
+                let param = {};
                 $.ajax({
-                    url: "http://localhost:8080/board/board-list.dox",
+                    url: "http://localhost:8080/user/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                    console.log = (data);
-                    self.list = data.list;
+                        console.log(data);
+                        self.list = data.list;
                     }
                 });
             },
-            fnView : function(boardNo){
-                // alert(boardNo);
-                pageChange("/board/board-view.do" ,{boardNo : boardNo});
-                
-            },
-             fnRemove: function (stuNo) {
+            fnRemove: function (userId) {
                 let self = this;
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                }
                 let param = {
-                    boardNo : self.boardNo
+                    userId : userId,
                 };
                 $.ajax({
-                    url: "http://localhost:8080/board/board-remove.dox",
+                    url: "http://localhost:8080/user/remove.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
+                        console.log(data);
                         alert(data.message);
-                        self.fnList();
+                        self.fnGetList();                    
+                    }
+                });
+            },
+            fnDelete: function () {
+                let self = this;
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                }
+                let param = {
+                    userId : self.selectUserId
+                };
+                $.ajax({
+                    url: "http://localhost:8080/user/remove.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        alert(data.message);
+                        self.fnGetList();                    
                     }
                 });
             }
@@ -117,7 +126,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnList();
+            self.fnGetList();
         }
     });
 

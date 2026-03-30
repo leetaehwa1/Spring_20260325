@@ -14,6 +14,8 @@ import com.example.demo.dao.DefaultService;
 import com.example.demo.dao.UserService;
 import com.google.gson.Gson;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Controller
 public class UserController {
 	@Autowired
@@ -29,6 +31,12 @@ public class UserController {
 	public String join(Model model) throws Exception{
 		return "/user/sign-up"; 
 	}
+	
+	@RequestMapping("/addr.do") 
+	public String addr(Model model) throws Exception{
+		return "/user/jusoPopup"; 
+	}
+	
 	
 	@RequestMapping(value = "/login.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 	@ResponseBody 
@@ -62,6 +70,31 @@ public class UserController {
 //		DefaultService obj = new DefaultService();
 		System.out.println(map);
 		resultMap = userService.checkUser(map);
+		
+		return new Gson().toJson(resultMap); 
+	}
+	
+	
+//	=== 복습 (User 테이블) ===
+	@RequestMapping("/user/list.do") 
+	public String user(HttpServletRequest request,Model model, @RequestParam HashMap<String, Object> map) throws Exception{
+		return "/user/user-list"; 
+	}
+	
+	@RequestMapping(value = "/user/list.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String list(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>(map);
+		resultMap = userService.getUserList(map);
+		
+		return new Gson().toJson(resultMap); 
+	}
+	
+	@RequestMapping(value = "/user/remove.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String remove(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
+		HashMap<String, Object> resultMap = new HashMap<String, Object>(map);
+		resultMap = userService.removeUser(map);
 		
 		return new Gson().toJson(resultMap); 
 	}

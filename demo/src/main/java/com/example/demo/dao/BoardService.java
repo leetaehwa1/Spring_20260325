@@ -80,15 +80,4 @@ public class BoardService {
 		return resultMap;
 	}
 	
-	public HashMap<String,Object> removeBoard(HashMap<String,Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
-		int cnt = boardMapper.deleteBoard(map);
-		if(cnt > 0) {
-			resultMap.put("message", "데이터 삭제 성공");
-		}else {
-			resultMap.put("message", "데이터 삭제 실패");
-		}
-		resultMap.put("result", "success"); // 이건 DB 와의 통신 성공
-		return resultMap;
-	}
 }

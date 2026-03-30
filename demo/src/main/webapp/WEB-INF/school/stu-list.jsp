@@ -10,12 +10,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
+
     <style>
-         body{
-            display: flex;
+       
+        table{
             justify-content: center;
+            text-align: center;
             align-items: center;
-            height: 100vh;
         }
         table, tr, td, th{
             border : 1px solid black;
@@ -33,32 +34,42 @@
 </head>
 <body>
     <div id="app">
+        <div id="container">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <div>
-            검색어 : 
-            <input v-model="keyword">
-            <button @click="fnList">검색</button>
-        </div> 
-        <table>
-             <tr>
-                <th>게시물 번호</th>
-                <th>아이디</th>
-                <th>제목</th>
-                <th>내용</th>
-                <th>조회수</th>
-                <th>작성일</th>
+         <div class="search-area">
+            <label>학년 :
+                <select v-model="grade" @change="fnGetList()">
+                    <option value="">:: 전체 ::</option>
+                    <option value="1">1학년</option>
+                    <option value="2">2학년</option>
+                    <option value="3">3학년</option>
+                    <option value="4">4학년</option>
+                </select>
+            </label>
+         </div>
+         <div class="table-area">
+          <table>
+            <tr>
+                <th>학번</th>
+                <th>이름</th>
+                <th>학부</th>
+                <th>학과</th>
+                <th>학년</th>
+                <th>부전공</th>
+                <th>담당교수</th>
             </tr>
-
             <tr v-for="item in list">
-                <td>{{item.boardNo}}</td>
-                <td>{{item.userId}}</td>
-                <td><a href="javascript:;" @click="fnView(item.boardNo)">{{item.title}}</a></td>
-                <td>{{item.contents}}</td>
-                <td>{{item.cnt}}</td>
-                <td>{{item.cdatetime}}</td>
+                <td>{{item.stuNo}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.dName2}}</td>
+                <td>{{item.dName3}}</td>
+                <td>{{item.grade}}</td>
+                <td>{{item.subName3}}</td>
+                <td>{{item.profName}}</td>
             </tr>
          </table>
-         <a href="/board/board-add.do"><button>글쓰기</button></a>
+         </div>
+         </div>
     </div>
 </body>
 </html>
@@ -69,55 +80,33 @@
             return {
                 // 변수 - (key : value)
                 list: [],
-                keyword : "",
-                boardNo : ""
+                grade: "",
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnGetList: function () {
                 let self = this;
                 let param = {
-                    keyword : self.keyword,
+                    grade : self.grade,
+                };
+                $.ajax({
+                    url: "http://localhost:8080/stu/list.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        self.list = data.list;
+                    }
+                });
+            },
 
-                };
-                $.ajax({
-                    url: "http://localhost:8080/board/board-list.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                    console.log = (data);
-                    self.list = data.list;
-                    }
-                });
-            },
-            fnView : function(boardNo){
-                // alert(boardNo);
-                pageChange("/board/board-view.do" ,{boardNo : boardNo});
-                
-            },
-             fnRemove: function (stuNo) {
-                let self = this;
-                let param = {
-                    boardNo : self.boardNo
-                };
-                $.ajax({
-                    url: "http://localhost:8080/board/board-remove.dox",
-                    dataType: "json",
-                    type: "POST",
-                    data: param,
-                    success: function (data) {
-                        alert(data.message);
-                        self.fnList();
-                    }
-                });
-            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnList();
+            self.fnGetList();
         }
     });
 

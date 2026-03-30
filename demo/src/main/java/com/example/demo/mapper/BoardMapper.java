@@ -18,5 +18,5 @@ public interface BoardMapper {
 	public Board selectBoard(HashMap<String,Object> map);
 	public int updateCnt(HashMap<String,Object> map);
 	public int updateBoard(HashMap<String, Object> map);
-	public int deleteBoard(HashMap<String,Object> map);
+	
 }
