@@ -12,6 +12,14 @@
 		from professor p
 		inner join department d1 on p.deptno = d1.deptno
 		inner join department d2 on d1.part = d2.deptno
+		where 1=1
+		<if test="position != '' and position != null">
+			and p.position = #{position}
+		</if>
+		<if test="deptNo != '' and deptNo != null">
+			and p.deptNo = #{deptNo}
+			
+		</if>
 	</select>
 	
 	<!--한 개 검색-->
@@ -31,18 +39,44 @@
 		<if test="grade != '' and grade != null">
 			and s.grade = #{grade}
 		</if>
-		
+		<if test="deptNo != '' and deptNo != null">
+			and s.deptNo1 = #{deptNo}
+			
+		</if>
+	</select>
+	
+	<select id="selectDeptList" parameterType="hashmap" resultType="com.example.demo.model.Dept">
+		SELECT * 
+		FROM DEPARTMENT
+		WHERE BUILD IS NOT NULL
 		
 	</select>
 	
 	<!--삽입-->
-	<insert id="insertUser" parameterType="hashmap">
-	
+	<insert id="insertStu" parameterType="hashmap">
+		INSERT INTO STU(
+			STUNO, NAME, GRADE, DEPTNO1, PROFNO
+		) VALUES(#{stuNo}, #{stuName}, #{grade}, #{deptNo}, #{profNo})
+	</insert>
+	<insert id="insertProf" parameterType="hashmap">
+		INSERT INTO PROFESSOR(
+			PROFNO, NAME, POSITION, PAY, DEPTNO
+		) VALUES(#{profNo}, #{profName}, #{position}, #{pay}, #{deptNo})
 	</insert>
 	
-	<!--삭제-->
-	<delete id="deleteUser" parameterType="hashmap">
+	<select id="selectStu" parameterType="hashmap" resultType="com.example.demo.model.Student">
+		SELECT * 
+		FROM STU
+		WHERE STUNO = #{stuNo}
+	</select>
 	
+	<!--삭제-->
+	<delete id="deleteStu" parameterType="hashmap">
+		DELETE FROM STU WHERE STUNO = #{stuNo}
+	</delete>
+	
+	<delete id="deleteProf" parameterType="hashmap">
+		DELETE FROM PROFESSOR WHERE PROFNO = #{profNo}
 	</delete>
 	
 	<!--수정-->

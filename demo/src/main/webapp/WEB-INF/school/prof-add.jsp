@@ -29,48 +29,35 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         <div class="search-area">
+        <div>
+            <label>교수번호 : <input v-model="profNo"></label>
+        </div>
+        <div>
+            <label>이름 : <input v-model="profName"></label>
+        </div>
+        <div>
             <label>직급 :
-                <select v-model="position" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
+                <select v-model="position">
                     <option value="정교수">정교수</option>
                     <option value="조교수">조교수</option>
                     <option value="전임강사">전임강사</option>
                 </select>
             </label>
+        </div>
+        <div>
+            <label>급여 : <input v-model="pay"></label>
+        </div>
+        <div>
             <label>
                 학과 : 
-                <select v-model="deptNo" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
+                <select v-model="deptNo">
                     <option v-for="item in deptList" :value="item.deptNo">{{item.dName}}</option>
                 </select>
             </label>
-         </div>
-         <table>
-            <tr>
-                <th>선택</th>
-                <th>교수번호</th>
-                <th>이름</th>
-                <th>직급</th>
-                <th>급여</th>
-                <th>학부</th>
-                <th>학과</th>
-            </tr>
-            <tr v-for="item in list">
-                 <td><input type="radio" name="prof" v-model="selectProfNo" :value="item.profNo"></td>
-                <td>{{item.profNo}}</td>
-                <td>{{item.name}}</td>
-                <td>{{item.position}}</td>
-                <td>{{item.pay}}</td>
-                <td>{{item.dName2}}</td>
-                <td>{{item.dName3}}</td>
-            </tr>
-         </table>
-         
-        <div class="btn-area">
-           <a href="/prof/add.do"><button>교수추가</button></a>
-           <button @click="fnDelete(selectProfNo)">삭제</button>
-         </div>
+        </div>
+         <div>
+            <button @click="fnProfAdd()">교수 추가</button>
+        </div>
     </div>
 </body>
 </html>
@@ -80,59 +67,57 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list : [],
-                deptList : [],
-                position : "",
-                deptNo: "",
-                selectProfNo : "",
+                deptList: [],
+                profNo :"",
+                profName : "",
+                position : "정교수",
+                pay : "",
+                deptNo : "" ,    
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnGetList: function () {
+            fnProfAdd: function () {
                 let self = this;
                 let param = {
+                    profNo : self.profNo,
+                    profName : self.profName,
                     position : self.position,
-                    deptNo : self.deptNo,
+                    pay : self.pay,
+                    deptNo : self.deptNo
                 };
                 $.ajax({
-                    url: "http://localhost:8080/prof/list.dox",
+                    url: "http://localhost:8080/prof/add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        console.log(data);
-                        self.list = data.list;
-                        self.deptList = data.deptList;
+                        alert(data.message);
+                        if(data.result == 'success'){
+                        location.href = "/prof/list.do";
+                       }
                     }
                 });
             },
-            fnDelete: function (selectProfNo) {
+            fnDeptList: function () {
                 let self = this;
-                if(!confirm("삭제하시겠습니까?")){
-                    return;
-                }
-                let param = {
-                    profNo : self.selectProfNo
-                };
+                let param = {};
                 $.ajax({
-                    url: "http://localhost:8080/prof/remove.dox",
+                    url: "http://localhost:8080/dept/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        console.log(data);
-                        alert(data.message);
-                        self.fnGetList();
-                        self.selectProfNo = "";                    
+                        self.deptList = data.list;
+                        self.deptNo = data.list[0].deptNo
                     }
                 });
-            }
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnGetList();
+            self.fnDeptList();
         }
     });
 

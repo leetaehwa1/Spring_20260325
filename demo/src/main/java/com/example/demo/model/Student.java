@@ -16,7 +16,7 @@ public class Student {
 	String dName3; // 학과
 
 	
-	String subName1; // 부전공 대학
+	String subName1; // 부전공 대학 
 	String subName2; // 부전공 학부
 	String subName3; // 부전공 학과
 	
