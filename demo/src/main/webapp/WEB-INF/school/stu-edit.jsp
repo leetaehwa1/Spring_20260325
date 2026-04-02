@@ -12,12 +12,6 @@
     <script src="/js/page-change.js"></script>
 
     <style>
-       
-        table{
-            justify-content: center;
-            text-align: center;
-            align-items: center;
-        }
         table, tr, td, th{
             border : 1px solid black;
             border-collapse: collapse;
@@ -34,56 +28,47 @@
 </head>
 <body>
     <div id="app">
-        <div id="container">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         <div class="search-area">
+         <div>
+            <label>학번 : <input v-model="info.stuNo" maxlength="4" disabled></label>
+        </div>
+
+        <div>
+            <label>이름 : <input v-model="info.stuName"></label>
+        </div>
+        <div>
             <label>학년 :
-                <select v-model="grade" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
+                <select v-model="info.grade">
                     <option value="1">1학년</option>
                     <option value="2">2학년</option>
                     <option value="3">3학년</option>
                     <option value="4">4학년</option>
                 </select>
+                
             </label>
+        </div>
+        <div>
             <label>
                 학과 : 
-                <select v-model="deptNo" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
+                <select v-model="info.deptNo1">
                     <option v-for="item in deptList" :value="item.deptNo">{{item.dName}}</option>
                 </select>
             </label>
-         </div>
-         <div class="table-area">
-          <table>
-            <tr>
-                <th>학번</th>
-                <th>이름</th>
-                <th>학부</th>
-                <th>학과</th>
-                <th>학년</th>
-                <th>담당교수</th>
-                <th>삭제</th>
-            </tr>
-            <tr v-for="item in list">
-                <td>{{item.stuNo}}</td>
-                <td>
-                    <a href="javascript:;" @click="fnView(item.stuNo)">
-                        {{item.name}}
-                    </a>
-                </td>
-                <td>{{item.dName2}}</td>
-                <td>{{item.dName3}}</td>
-                <td>{{item.grade}}</td>
-                <td>{{item.profName}}</td>
-                <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
-            </tr>
-         </table>
-         </div>
-          <div class="btn-area">
-           <a href="/stu/add.do"><button>학생추가</button></a>
-         </div>
-         </div>
+        </div>
+        <div>
+            <label>
+                담당교수 : 
+                <select v-model="info.profNo">
+                    <option value="">담당교수없음</option>
+                    <template v-for="item in profList">
+                        <option v-if="info.deptNo1 == item.deptNo" :value="item.profNo">{{item.name}}({{item.dName3}})</option>
+                    </template>
+                </select>
+            </label>
+        </div>
+        <div>
+            <button @click="fnStuEdit()">학생 수정</button>
+        </div>
     </div>
 </body>
 </html>
@@ -93,34 +78,38 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list: [],
-                deptList :[],
-                grade: "",
-                deptNo : "",
-
+                stuNo : "${map.stuNo}",
+                deptList: [],
+                profList: [],
+                info : {
+                    stuNo : "",
+                    stuName : "",
+                    grade : "",
+                    deptNo1 : "",
+                    profNo: "",
+                },
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnGetList: function () {
+            fnGetInfo: function (stuNo) {
                 let self = this;
                 let param = {
-                    grade : self.grade,
-                    deptNo : self.deptNo,
+                    stuNo : self.stuNo
                 };
                 $.ajax({
-                    url: "http://localhost:8080/stu/list.dox",
+                    url: "http://localhost:8080/stu/info.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
-                        self.list = data.list;
-                        self.deptList = data.deptList;
+                        self.info = data.info;
+                        self.info.stuName = data.info.name;
                     }
                 });
             },
-            fnGetDeptList: function () {
+            fnDeptList: function () {
                 let self = this;
                 let param = {};
                 $.ajax({
@@ -129,41 +118,48 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        console.log(data);
                         self.deptList = data.list;
                     }
                 });
             },
-            fnRemove : function (stuNo) {
+            fnProfList: function () {
                 let self = this;
-                let param = {
-                    stuNo : stuNo
-                };
-                if(!confirm("삭제하시겠습니까?")){
-                    return;
-                }
+                let param = {};
                 $.ajax({
-                    url: "http://localhost:8080/stu/remove.dox",
+                    url: "http://localhost:8080/prof/list.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        alert(data.message);
-                        self.fnGetList();
+                        console.log(data);
+                        self.profList = data.list;                        
                     }
                 });
             },
-            fnView : function(stuNo){
-                pageChange("/stu/view.do", {stuNo : stuNo});
+            fnStuEdit :function(){
+                let self = this;
+                let param = self.info;
+                $.ajax({
+                    url: "http://localhost:8080/stu/edit.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                       alert(data.message);
+                        if(data.result == 'success'){
+                        location.href = "/stu/list.do";
+                       }                  
+                    }
+                });
             }
-            
-
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnGetList();
-            
+            self.fnDeptList();
+            self.fnProfList();
+            self.fnGetInfo();
         }
     });
 

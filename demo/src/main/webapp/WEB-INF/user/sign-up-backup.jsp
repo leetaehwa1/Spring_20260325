@@ -112,8 +112,21 @@
                         <input v-model="userName" placeholder="이름 입력">
                     </label>
                 </div>
-                <div>
-                    프로필이미지 <input type="file" id="file1" name="file1">
+
+                <div class="form-group1">
+                    핸드폰 인증 
+                    <div class="id-box">
+                        <template v-if="!phoneFlg">
+                            <input v-model="phoneNumber" placeholder="핸드폰 번호를 입력하세요.">
+                            <button @click="fnAuth()" class="btn-check">인증번호 발송</button>
+                        </template>
+                        <template v-else>
+                            <template v-if="!ranFlg">
+                                <input v-model="phoneAuth" :placeholder="timer">
+                                <button @click="fnAuthCheck()" class="btn-check">인증번호확인</button>
+                            </template>
+                        </template>
+                    </div>
                 </div>
 
                 <div class="form-group1">
@@ -146,6 +159,16 @@
                     pwd: "",
                     userName: "",
                     addr: "",
+                    
+                    phoneNumber : "",
+                    ranStr : "", // 문자로 받은 랜덤 숫자
+                    phoneAuth : "", // 내가 입력한 숫자
+                    phoneFlg : false,
+                    ranFlg : false, // 인증번호 정상 입력 시 true
+
+                    count : 180,
+                    timer : "",
+                    intervalId : null,
                 };
             },
             methods: {
@@ -167,7 +190,10 @@
                 },
                 fnJoin: function () {
                     let self = this;
-                    
+                    if(!self.ranFlg){
+                        alert("문자 인증 후 진행해주세요.");
+                        return;
+                    }
                     let param = {
                         userId: self.userId,
                         pwd: self.pwd,
@@ -183,11 +209,64 @@
                         }
                     });
                 },
-                
                 fnAddr: function () {
                     window.open("/addr.do", "addr", "width=500, height=500");
                 },
-                 // methods
+                fnAuth: function () {
+                    let self = this;
+                    let param = {
+                        phoneNumber : self.phoneNumber
+                    };
+                    $.ajax({
+                        url: "http://localhost:8080/send-one",
+                        dataType: "json",
+                        type: "POST",
+                        data: param,
+                        success: function (data) {
+                            console.log(data);
+                            if(data.response.groupInfo.status == 'SENDING'){
+                                alert("문자가 전송되었습니다.");
+                                self.phoneFlg = true;
+                                self.ranStr = data.ranStr;
+                                self.intervalId = setInterval(self.fnTimer, 1000);
+                            }else{
+                                alert("에러가 발생했습니다. 다시 시도해주세요.");
+                            }
+                        }
+                    });
+                },
+                fnTimer : function(){
+                    let self = this;
+
+                    if(self.count <= 0){
+                        clearInterval(self.intervalId);
+                        self.timer = "시간 초과";
+                        alert("시간 초과");
+                        return;
+                    }
+
+                    let min = "";
+                    let sec = "";
+                    min = parseInt(self.count / 60);
+                    sec = parseInt(self.count % 60);
+
+                    min = min < 10 ? "0" + min : min;
+                    sec = sec < 10 ? "0" + sec : sec;
+
+                    self.timer = min + " : " + sec ;
+                    self.count--;
+                },
+                fnAuthCheck : function(){
+                    let self = this;
+                    if(self.ranStr == self.phoneAuth){
+                        alert("인증되었습니다.");
+                        self.ranFlg = true;
+                    }else{
+                        alert("인증번호를 다시 확인해주세요.");
+                    }
+
+                }
+            }, // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
                 let self = this;

@@ -35,6 +35,9 @@ public class BoardService {
 		HashMap<String,Object> resultMap = new HashMap<String,Object>();
 		try {
 			boardMapper.insertBoard(map);
+			System.out.println("insert 된 키 key 값 : " + map.get("boardNo"));
+			
+			resultMap.put("boardNo", map.get("boardNo"));
 			resultMap.put("message", "등록되었습니다.");
 			resultMap.put("result", "success");
 		} catch (Exception e) {
@@ -53,6 +56,9 @@ public class BoardService {
 				boardMapper.updateCnt(map);	
 			}
 			Board info = boardMapper.selectBoard(map);
+			List<Board> fileList = boardMapper.selectBoardFile(map);
+			
+			resultMap.put("fileList", fileList);
 			resultMap.put("info", info);
 			resultMap.put("message", "데이터 조회 성공");
 			resultMap.put("result", "success");
@@ -80,4 +86,18 @@ public class BoardService {
 		return resultMap;
 	}
 	
+	public HashMap<String,Object> addBoardFile(HashMap<String, Object> map){
+		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+		try {
+			boardMapper.insertBoardFile(map);
+			resultMap.put("message", "등록되었습니다.");
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("message", "서버 에러");
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
 }

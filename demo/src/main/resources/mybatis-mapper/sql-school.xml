@@ -21,6 +21,17 @@
 			
 		</if>
 	</select>
+	<select id="selectProf" parameterType="hashmap" resultType="com.example.demo.model.Professor">
+		select 
+			p.*, 
+			d2.dname as dname2, 
+			d1.dname as dname3
+		from professor p
+		inner join department d1 on p.deptno = d1.deptno
+		inner join department d2 on d1.part = d2.deptno
+		where profno = #{profNo}
+		
+	</select>
 	
 	<!--한 개 검색-->
 	<select id="selectStuList" parameterType="hashmap" resultType="com.example.demo.model.Student">
@@ -65,8 +76,17 @@
 	</insert>
 	
 	<select id="selectStu" parameterType="hashmap" resultType="com.example.demo.model.Student">
-		SELECT * 
-		FROM STU
+		select 
+			s.*,
+			 d2.dname as dname2, 
+			 d1.dname as dname3, 
+			 d3.dname as subName3,
+			 p.name as prof_name
+		from stu s
+		left join department d3 on s.deptno2 = d3.deptno
+		left join professor p on s.profno = p.profno
+		inner join department d1 on s.deptno1 = d1.deptno
+		inner join department d2 on d1.part = d2.deptno
 		WHERE STUNO = #{stuNo}
 	</select>
 	
@@ -80,7 +100,23 @@
 	</delete>
 	
 	<!--수정-->
-	<update id="updateUser" parameterType="hashmap">
-	
+	<update id="updateStu" parameterType="hashmap">
+		UPDATE STU
+		SET 
+			NAME = #{stuName},
+			GRADE = #{grade},
+			DEPTNO1 = #{deptNo1},
+			PROFNO = #{profNo}
+		WHERE STUNO = #{stuNo}
+	</update>
+	<update id="updateProf" parameterType="hashmap">
+		UPDATE PROFESSOR
+		SET 
+			NAME = #{profName},
+			POSITION = #{position},
+			PAY = #{pay},
+			DEPTNO = #{deptNo}
+			
+		WHERE PROFNO = #{profNo}
 	</update>
 </mapper>

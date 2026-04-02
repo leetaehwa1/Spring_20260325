@@ -12,60 +12,36 @@
     <script src="/js/page-change.js"></script>
 
     <style>
-        body{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f5f6fa;
-        }
-        table{
-            width: 500px;
+        table, tr, td, th{
+            border : 1px solid black;
             border-collapse: collapse;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding : 5px 10px;
+            text-align: center;
         }
-
-       th{
-            width: 120px;
-            background-color: #989ba9;
-            text-align: left;
-        }
-        td{ 
-            text-align: left;
+        th{
+            background-color: beige;
         }
         tr:nth-child(even){
-            background-color:#fafafa;
+            background-color: azure;
         }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         <table>
-            <tr>
-                <th>제목</th>
-                <td>{{info.title}}</td>
-                <th>조회수</th>
-                <td>{{info.cnt}}</td>
-            </tr>
-            <div v-for="item in fileList">
-                <img :src="item.filePath">
-            </div>
-            <tr>
-                <th></th>
-            </tr>
-            <tr>
-                <th>내용</th>
-                <td colspan="4">{{info.contents}}</td>  
-            </tr>
-            <div>
-                내용 (html태그적용) : <div v-html="info.contents"></div>
-            </div>
-         </table>
          <div>
-            <button @click="fnEdit()">수정</button>
+            교수번호 : {{info.profNo}}
          </div>
+         <div>
+            이름 : {{info.name}}
+         </div>
+         <div>
+            직급 : {{info.position}}
+         </div>
+         <div>
+            급여 : {{info.pay}}
+         </div>
+         <button @click="fnEdit(profNo)">수정하기</button>
     </div>
 </body>
 </html>
@@ -75,42 +51,36 @@
         data() {
             return {
                 // 변수 - (key : value)
-                boardNo : "${boardNo}",
-                info :{
-                },
-                fileList :[],
+                info : {},
+                profNo : "${map.profNo}",
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnGetBoard: function () {
+            fnGetInfo: function () {
                 let self = this;
                 let param = {
-                    boardNo : self.boardNo,
-                    kind : "view",
+                    profNo : self.profNo,
                 };
                 $.ajax({
-                    url: "http://localhost:8080/board/board-info.dox",
+                    url: "http://localhost:8080/prof/info.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         console.log(data);
                         self.info = data.info;
-                        self.fileList = data.fileList;
                     }
                 });
             },
             fnEdit : function(){
-                 pageChange("/board/board-edit.do" ,{boardNo : this.boardNo});
-                
+                pageChange("/prof/edit.do", {profNo : this.profNo});
             }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnGetBoard();
-
+            self.fnGetInfo();
         }
     });
 

@@ -13,11 +13,14 @@
 		FROM TBL_USER
 		WHERE USERID = #{userId}
 	</select>
-	<insert id="insertUser" parameterType="hashmap">
+	
+	<insert id="insertUser" 
+			parameterType="hashmap">
 		INSERT INTO TBL_USER(USERID, PWD, USERNAME) VALUES(
 			#{userId}, #{pwd}, #{userName}
 		)
 	</insert>
+	
 	<!--삭제-->
 	<delete id="deleteUser" parameterType="hashmap">
 		DELETE FROM TBL_USER WHERE USERID = #{userId}

@@ -13,4 +13,10 @@ public class Board {
 	String cdatetime;
 	String udatetime;
 	
+	// 첨부파일
+	String fileNo;
+	String filePath;
+	String fileOrgName;
+	String fileSize;
+	String fileETC;
 }

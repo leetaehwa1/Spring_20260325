@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.common.Message;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.model.Board;
 import com.example.demo.model.User;
 
 //서비스에서 매퍼를 호할 때 select, 컨트롤러에서 서비스를 호출할 때 get
@@ -19,6 +20,7 @@ public class UserService {
 	public HashMap<String,Object> login(HashMap<String, Object> map){
 		HashMap<String,Object> resultMap = new HashMap<String,Object>(map);
 		User user = userMapper.selectUser(map);
+		
 		
 		if(user != null) {
 			if(user.getPwd().equals(map.get("pwd"))) {
