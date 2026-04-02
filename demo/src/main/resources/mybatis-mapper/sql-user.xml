@@ -14,11 +14,21 @@
 		WHERE USERID = #{userId}
 	</select>
 	
+	<select id="selectUserFile" parameterType="hashmap" resultType="com.example.demo.model.User">
+		SELECT * 
+		FROM TBL_USER_FILE
+		WHERE USERID = #{userId}
+	</select>
+	
 	<insert id="insertUser" 
 			parameterType="hashmap">
 		INSERT INTO TBL_USER(USERID, PWD, USERNAME) VALUES(
 			#{userId}, #{pwd}, #{userName}
 		)
+	</insert>
+	<insert id="insertUserFile" parameterType="hashmap">
+		INSERT INTO TBL_USER_FILE 
+		VALUES(#{userId}, #{idx}, #{path}, #{fileName}, #{orgName}, #{size}, #{ext})
 	</insert>
 	
 	<!--삭제-->

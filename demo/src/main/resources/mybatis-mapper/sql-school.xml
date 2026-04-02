@@ -52,9 +52,23 @@
 		</if>
 		<if test="deptNo != '' and deptNo != null">
 			and s.deptNo1 = #{deptNo}
-			
 		</if>
+		<choose>
+			<when test="orderItem == 'name'">
+				ORDER BY NAME
+			</when>
+			<when test="orderItem == 'dept'">
+				ORDER BY D1.DNAME
+			</when>
+			<when test="orderItem == 'grade'">
+				ORDER BY GRADE
+			</when>
+			<otherwise>
+				ORDER BY GRADE
+			</otherwise>
+		</choose>
 	</select>
+	
 	
 	<select id="selectDeptList" parameterType="hashmap" resultType="com.example.demo.model.Dept">
 		SELECT * 
@@ -97,6 +111,14 @@
 	
 	<delete id="deleteProf" parameterType="hashmap">
 		DELETE FROM PROFESSOR WHERE PROFNO = #{profNo}
+	</delete>
+	
+	<delete id="deleteAllStu" parameterType="hashmap">
+		DELETE FROM STU 
+		WHERE STUNO IN
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+			#{item}			
+		</foreach> 
 	</delete>
 	
 	<!--수정-->

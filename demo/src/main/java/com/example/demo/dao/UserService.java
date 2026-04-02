@@ -36,6 +36,7 @@ public class UserService {
 		return resultMap;
 	}
 	
+	
 	public HashMap<String,Object> addUser(HashMap<String, Object> map){
 		HashMap<String,Object> resultMap = new HashMap<String,Object>(map);
 	try {
@@ -57,8 +58,8 @@ public class UserService {
 		
 		
 		return resultMap;
-	}
 	
+}
 	public HashMap<String,Object> checkUser(HashMap<String, Object> map){
 		HashMap<String,Object> resultMap = new HashMap<String,Object>(map);
 		User user = userMapper.selectUser(map);
@@ -118,3 +119,5 @@ public class UserService {
 	
 }
 }
+
+

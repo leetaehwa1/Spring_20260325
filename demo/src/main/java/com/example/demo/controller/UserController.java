@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.dao.DefaultService;
 import com.example.demo.dao.UserService;
 import com.google.gson.Gson;
 
@@ -104,7 +103,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value = "/user/fileUpload.dox", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	public String result(@RequestParam(value="file1", required=false) MultipartFile multi, @RequestParam("idx") int idx, HttpServletRequest request,HttpServletResponse response, Model model)
+	public String result(@RequestParam(value="file1", required=false) MultipartFile multi, @RequestParam("userId") String userId, HttpServletRequest request,HttpServletResponse response, Model model)
 	{
 		String url = null;
 		String path="c:\\img";
@@ -135,11 +134,11 @@ public class UserController {
 				map.put("orgName", originFilename);
 				map.put("size", size);
 				map.put("ext", extName);
-				map.put("idx", idx);
+				map.put("userId", userId);
 				
 				
 				// insert 쿼리 실행
-//			    userService.addBoardFile(map);
+			    userService.addUser(map);
 				
 				model.addAttribute("filename", multi.getOriginalFilename());
 				model.addAttribute("uploadPath", file.getAbsolutePath());
@@ -152,7 +151,7 @@ public class UserController {
 		return "redirect:/user/list.do";
 	}
 	    
-	// 현재 시간을 기준으로 파일 이름 생성
+//	 현재 시간을 기준으로 파일 이름 생성
 	private String genSaveFileName(String extName) {
 		String fileName = "";
 		
@@ -169,3 +168,4 @@ public class UserController {
 		return fileName;
 	}
 }
+

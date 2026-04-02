@@ -54,9 +54,16 @@
                 </select>
             </label>
          </div>
+         <div class="order-aread">
+            <label><input type="radio" name="order" value="name" v-model="orderItem"> 이름순</label>
+            <label><input type="radio" name="order" value="dept" v-model="orderItem"> 학과순</label>
+            <label><input type="radio" name="order" value="grade" v-model="orderItem"> 학년순</label>
+            <button @click="fnGetList()">조회</button>
+         </div>
          <div class="table-area">
           <table>
             <tr>
+                <th>선택</th>
                 <th>학번</th>
                 <th>이름</th>
                 <th>학부</th>
@@ -66,6 +73,7 @@
                 <th>삭제</th>
             </tr>
             <tr v-for="item in list">
+                <td><input type="checkbox" v-model="selectList" :value="item.stuNo"></td>
                 <td>{{item.stuNo}}</td>
                 <td>
                     <a href="javascript:;" @click="fnView(item.stuNo)">
@@ -82,6 +90,7 @@
          </div>
           <div class="btn-area">
            <a href="/stu/add.do"><button>학생추가</button></a>
+           <button @click="fnRemoveAll()">삭제</button>
          </div>
          </div>
     </div>
@@ -94,10 +103,11 @@
             return {
                 // 변수 - (key : value)
                 list: [],
-                deptList :[],
+                deptList : [],
+                selectList : [],
                 grade: "",
                 deptNo : "",
-
+                orderItem : "grade",
             };
         },
         methods: {
@@ -107,6 +117,7 @@
                 let param = {
                     grade : self.grade,
                     deptNo : self.deptNo,
+                    orderItem : self.orderItem,
                 };
                 $.ajax({
                     url: "http://localhost:8080/stu/list.dox",
@@ -155,9 +166,28 @@
             },
             fnView : function(stuNo){
                 pageChange("/stu/view.do", {stuNo : stuNo});
-            }
-            
-
+            },
+            fnRemoveAll : function(){
+                let self = this;
+                var fList = JSON.stringify(self.selectList);
+                let param = {
+                    selectList : fList, 
+                };
+                if(!confirm("삭제하시겠습니까?")){
+                    return;
+                }
+                $.ajax({
+                    url: "http://localhost:8080/stu/remove-all.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        alert(data.message);
+                        self.selectList =[];
+                        self.fnGetList();
+                    }
+                });
+            },
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분

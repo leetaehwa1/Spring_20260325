@@ -19,6 +19,10 @@ public interface UserMapper {
 	
 	public int deleteUser(HashMap<String, Object> map);
 	
-	
+	// 첨부파일 목록
+	public List<User> selectUserFile(HashMap<String, Object> map);
+		
+	//파일 삽입
+	public int insertUserFile(HashMap<String, Object> map);
 }
  

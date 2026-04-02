@@ -33,7 +33,7 @@ public class BoardController {
 	// 추가
 	@RequestMapping("/board/board-add.do") 
 	public String add(Model model) throws Exception{
-		return "/board/board-add"; 
+		return "/board/board-add";  
 	}
 	
 	@RequestMapping("/board/board-view.do") 

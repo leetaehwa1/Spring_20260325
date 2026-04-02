@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+ <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <!DOCTYPE html>
     <html lang="en">
 
@@ -187,6 +187,7 @@
                 fnAddr: function () {
                     window.open("/addr.do", "addr", "width=500, height=500");
                 },
+            },
                  // methods
             mounted() {
                 // 처음 시작할 때 실행되는 부분
@@ -196,4 +197,6 @@
         });
 
         app.mount('#app');
-    </script>
+    </script> 
+
+  

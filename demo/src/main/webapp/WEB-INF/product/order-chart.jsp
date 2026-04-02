@@ -40,21 +40,41 @@
         data() {
             return {
                 // 변수 - (key : value)
-                chart : null
+                chart : null,
+                priceList : [],
+                nameList : [],
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
+            fnGetList : function(){
+                let self = this;
+                let param = {};
+                $.ajax({
+                    url: "http://localhost:8080/product/order.dox",
+                    dataType: "json",
+                    type: "POST",
+                    data: param,
+                    success: function (data) {
+                        console.log(data);
+                        for(let i=0; i<data.list.length;i++){
+                            self.priceList.push(data.list[i].sumPrice);
+                            self.nameList.push(data.list[i].productName);
+                        }
+                        self.fnChart();
+                    }
+                });
+            },
             fnChart: function () {
                 let self = this;
                 var options = {
                     series: [{
                         name: "Desktops",
-                        data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+                        data: self.priceList
                     }],
                     chart: {
                         height: 350,
-                        type: 'line ',
+                        type: 'bar',
                     zoom: {
                         enabled: false
                     }
@@ -66,7 +86,7 @@
                         curve: 'straight'
                     },
                     title: {
-                        text: 'Product Trends by Month',
+                        text: '제품 별 매출액',
                         align: 'left'
                     },
                     grid: {
@@ -76,21 +96,8 @@
                         },
                     },
                     xaxis: {
-                        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
-                    },
-                    colors: [function({ value, seriesIndex, w }) {
-                        if (value < 55) {
-                            return '#7E36AF'
-                        } else {
-                            return '#D9534F'
-                        }
-                        }, function({ value, seriesIndex, w }) {
-                        if (value < 111) {
-                            return '#7E36AF'
-                        } else {
-                            return '#D9534F'
-                        }
-                    }]
+                        categories: self.nameList,
+                    }, 
                 };
 
                 self.chart = new ApexCharts(document.querySelector("#chart"), options);
@@ -101,7 +108,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-            self.fnChart();
+            self.fnGetList();
         }
     });
 
