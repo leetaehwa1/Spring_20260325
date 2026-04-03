@@ -8,16 +8,19 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.mapper.BoardMapper;
 import com.example.demo.model.Board;
-import com.example.demo.model.User;
 
-//서비스에서 매퍼를 호할 때 select, 컨트롤러에서 서비스를 호출할 때 get
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class BoardService {
 	@Autowired
-	BoardMapper boardMapper ; // 클래스 객체 형식.
-	public HashMap<String,Object> getBoardList(HashMap<String, Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+	BoardMapper boardMapper;
+	
+	@Autowired
+	HttpSession session;
+	
+	public HashMap<String, Object> getBoardList(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			List<Board> list = boardMapper.selectBoardList(map);
 			resultMap.put("list", list);
@@ -26,38 +29,55 @@ public class BoardService {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
-			resultMap.put("message", "서버 에러");
-			resultMap.put("result", "fail");
-		}
-		return resultMap;
-	}
-	public HashMap<String,Object> addBoard(HashMap<String, Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
-		try {
-			boardMapper.insertBoard(map);
-			System.out.println("insert 된 키 key 값 : " + map.get("boardNo"));
-			
-			resultMap.put("boardNo", map.get("boardNo"));
-			resultMap.put("message", "등록되었습니다.");
-			resultMap.put("result", "success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			resultMap.put("message", "서버 에러");
+			resultMap.put("message", "서버 에러!");
 			resultMap.put("result", "fail");
 		}
 		return resultMap;
 	}
 	
-	public HashMap<String,Object> getBoard(HashMap<String, Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+	public HashMap<String, Object> addBoard(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			map.put("sessionId", session.getAttribute("sessionId"));
+			boardMapper.insertBoard(map);
+			System.out.println("insert된 key값 : " + map.get("boardNo"));
+			
+			resultMap.put("boardNo", map.get("boardNo"));
+			resultMap.put("message", "등록되었습니다!");
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("message", "서버 에러!");
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> addBoardFile(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		try {
+			boardMapper.insertBoardFile(map);
+			resultMap.put("message", "등록되었습니다!");
+			resultMap.put("result", "success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e.getMessage());
+			resultMap.put("message", "서버 에러!");
+			resultMap.put("result", "fail");
+		}
+		return resultMap;
+	}
+	
+	public HashMap<String, Object> getBoard(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			if(map.get("kind").equals("view")) {
-				boardMapper.updateCnt(map);	
+				boardMapper.updateCnt(map);
 			}
 			Board info = boardMapper.selectBoard(map);
 			List<Board> fileList = boardMapper.selectBoardFile(map);
-			
+			 
 			resultMap.put("fileList", fileList);
 			resultMap.put("info", info);
 			resultMap.put("message", "데이터 조회 성공");
@@ -65,37 +85,22 @@ public class BoardService {
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
-			resultMap.put("message", "서버 에러");
+			resultMap.put("message", "서버 에러!");
 			resultMap.put("result", "fail");
 		}
 		return resultMap;
 	}
 	
-	public HashMap<String,Object> editBoard(HashMap<String, Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
+	public HashMap<String, Object> editBoard(HashMap<String, Object> map){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		try {
 			boardMapper.updateBoard(map);
-			resultMap.put("message", "수정되었습니다.");
+			resultMap.put("message", "수정되었습니다!");
 			resultMap.put("result", "success");
 		} catch (Exception e) {
 			// TODO: handle exception
 			System.out.println(e.getMessage());
-			resultMap.put("message", "서버 에러");
-			resultMap.put("result", "fail");
-		}
-		return resultMap;
-	}
-	
-	public HashMap<String,Object> addBoardFile(HashMap<String, Object> map){
-		HashMap<String,Object> resultMap = new HashMap<String,Object>();
-		try {
-			boardMapper.insertBoardFile(map);
-			resultMap.put("message", "등록되었습니다.");
-			resultMap.put("result", "success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e.getMessage());
-			resultMap.put("message", "서버 에러");
+			resultMap.put("message", "서버 에러!");
 			resultMap.put("result", "fail");
 		}
 		return resultMap;

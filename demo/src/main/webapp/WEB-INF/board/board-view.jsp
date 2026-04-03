@@ -63,8 +63,9 @@
                 내용 (html태그적용) : <div v-html="info.contents"></div>
             </div>
          </table>
-         <div>
+         <div v-if="info.userId == sessionId || sessionRole == 'A'">
             <button @click="fnEdit()">수정</button>
+            <button>삭제</button>
          </div>
     </div>
 </body>
@@ -76,6 +77,8 @@
             return {
                 // 변수 - (key : value)
                 boardNo : "${boardNo}",
+                sessionId : "${sessionId}",
+                sessionRole : "${sessionRole}",
                 info :{
                 },
                 fileList :[],
@@ -95,14 +98,15 @@
                     type: "POST",
                     data: param,
                     success: function (data) {
-                        console.log(data);
+                        console.log(data);  
                         self.info = data.info;
                         self.fileList = data.fileList;
                     }
                 });
             },
             fnEdit : function(){
-                 pageChange("/board/board-edit.do" ,{boardNo : this.boardNo});
+                let self = this;
+                 pageChange("/board/board-edit.do" ,{boardNo : self.boardNo});
                 
             }
         }, // methods

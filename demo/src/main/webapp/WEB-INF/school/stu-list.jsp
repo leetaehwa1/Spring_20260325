@@ -1,4 +1,3 @@
-
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -10,14 +9,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="/js/page-change.js"></script>
-
     <style>
-       
-        table{
-            justify-content: center;
-            text-align: center;
-            align-items: center;
-        }
         table, tr, td, th{
             border : 1px solid black;
             border-collapse: collapse;
@@ -34,65 +26,63 @@
 </head>
 <body>
     <div id="app">
-        <div id="container">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-         <div class="search-area">
-            <label>학년 :
-                <select v-model="grade" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
-                    <option value="1">1학년</option>
-                    <option value="2">2학년</option>
-                    <option value="3">3학년</option>
-                    <option value="4">4학년</option>
-                </select>
-            </label>
-            <label>
-                학과 : 
-                <select v-model="deptNo" @change="fnGetList()">
-                    <option value="">:: 전체 ::</option>
-                    <option v-for="item in deptList" :value="item.deptNo">{{item.dName}}</option>
-                </select>
-            </label>
-         </div>
-         <div class="order-aread">
-            <label><input type="radio" name="order" value="name" v-model="orderItem"> 이름순</label>
-            <label><input type="radio" name="order" value="dept" v-model="orderItem"> 학과순</label>
-            <label><input type="radio" name="order" value="grade" v-model="orderItem"> 학년순</label>
-            <button @click="fnGetList()">조회</button>
-         </div>
-         <div class="table-area">
-          <table>
-            <tr>
-                <th>선택</th>
-                <th>학번</th>
-                <th>이름</th>
-                <th>학부</th>
-                <th>학과</th>
-                <th>학년</th>
-                <th>담당교수</th>
-                <th>삭제</th>
-            </tr>
-            <tr v-for="item in list">
-                <td><input type="checkbox" v-model="selectList" :value="item.stuNo"></td>
-                <td>{{item.stuNo}}</td>
-                <td>
-                    <a href="javascript:;" @click="fnView(item.stuNo)">
-                        {{item.name}}
-                    </a>
-                </td>
-                <td>{{item.dName2}}</td>
-                <td>{{item.dName3}}</td>
-                <td>{{item.grade}}</td>
-                <td>{{item.profName}}</td>
-                <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
-            </tr>
-         </table>
-         </div>
-          <div class="btn-area">
-           <a href="/stu/add.do"><button>학생추가</button></a>
-           <button @click="fnRemoveAll()">삭제</button>
-         </div>
-         </div>
+        <div id="container">
+            <div class="search-area">
+                <label>학년 : 
+                    <select v-model="grade" @change="fnGetList">
+                        <option value="">:: 전체 ::</option>
+                        <option value="1">1학년</option>
+                        <option value="2">2학년</option>
+                        <option value="3">3학년</option>
+                        <option value="4">4학년</option>
+                    </select>
+                </label>
+                <label>
+                    학과 : 
+                    <select v-model="deptNo" @change="fnGetList">
+                        <option value="">:: 전체 ::</option>
+                        <option v-for="item in deptList" :value="item.deptNo">{{item.dName}}</option>
+                    </select>
+                </label>
+            </div>
+            <div class="order-area">
+                <label><input type="radio" name="order" value="name" v-model="orderItem"> 이름순</label>
+                <label><input type="radio" name="order" value="dept" v-model="orderItem"> 학과순</label>
+                <label><input type="radio" name="order" value="grade" v-model="orderItem"> 학년순</label>
+                <button @click="fnGetList">조회</button>
+            </div>
+            <div class="table-area">
+                <table>
+                    <tr>
+                        <th>선택</th>
+                        <th>학번</th>
+                        <th>이름</th>
+                        <th>학부</th>
+                        <th>학과</th>
+                        <th>학년</th>
+                        <th>담당교수</th>
+                        <th>삭제</th>
+                    </tr>
+                    <tr v-for="item in list">
+                        <td><input type="checkbox" v-model="selectList" :value="item.stuNo"></td>
+                        <td>{{item.stuNo}}</td>
+                        <td>
+                            <a href="javascript:;" @click="fnView(item.stuNo)">{{item.name}}</a>
+                        </td>
+                        <td>{{item.dName2}}</td>
+                        <td>{{item.dName3}}</td>
+                        <td>{{item.grade}}</td>
+                        <td>{{item.profName}}</td>
+                        <td><button @click="fnRemove(item.stuNo)">삭제</button></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="btn-area">
+                <a href="/stu/add.do"><button>학생추가</button></a>
+                <button @click="fnRemoveAll">삭제</button>
+            </div>
+        </div> 
     </div>
 </body>
 </html>
@@ -102,22 +92,22 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list: [],
+                list : [],
                 deptList : [],
                 selectList : [],
-                grade: "",
+                grade : "",
                 deptNo : "",
-                orderItem : "grade",
+                orderItem : "grade"
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnGetList: function () {
+            fnGetList : function () {
                 let self = this;
                 let param = {
                     grade : self.grade,
                     deptNo : self.deptNo,
-                    orderItem : self.orderItem,
+                    orderItem : self.orderItem
                 };
                 $.ajax({
                     url: "http://localhost:8080/stu/list.dox",
@@ -131,7 +121,8 @@
                     }
                 });
             },
-            fnGetDeptList: function () {
+
+            fnGetDeptList : function () {
                 let self = this;
                 let param = {};
                 $.ajax({
@@ -150,9 +141,6 @@
                 let param = {
                     stuNo : stuNo
                 };
-                if(!confirm("삭제하시겠습니까?")){
-                    return;
-                }
                 $.ajax({
                     url: "http://localhost:8080/stu/remove.dox",
                     dataType: "json",
@@ -161,21 +149,20 @@
                     success: function (data) {
                         alert(data.message);
                         self.fnGetList();
+
                     }
                 });
             },
             fnView : function(stuNo){
                 pageChange("/stu/view.do", {stuNo : stuNo});
             },
+
             fnRemoveAll : function(){
                 let self = this;
                 var fList = JSON.stringify(self.selectList);
                 let param = {
-                    selectList : fList, 
+                    selectList  : fList 
                 };
-                if(!confirm("삭제하시겠습니까?")){
-                    return;
-                }
                 $.ajax({
                     url: "http://localhost:8080/stu/remove-all.dox",
                     dataType: "json",
@@ -183,17 +170,18 @@
                     data: param,
                     success: function (data) {
                         alert(data.message);
-                        self.selectList =[];
+                        self.selectList = [];
                         self.fnGetList();
+
                     }
                 });
-            },
+            } 
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            // self.fnGetDeptList();
             self.fnGetList();
-            
         }
     });
 

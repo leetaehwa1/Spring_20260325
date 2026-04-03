@@ -129,72 +129,75 @@
         data() {
             return {
                 // 변수 - (key : value)
-                list : [],
-                info :{
+                info : {
                     kind : "1",
                     title : "",
-                    contents : "",
+                    contents : ""
                 }
-               
+                
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnAdd: function () {
+            fnAdd : function () {
                 let self = this;
                 let param = self.info;
                 $.ajax({
-                    url: "http://localhost:8080/board/board-add.dox",
+                    url: "http://localhost:8080/board/board/add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
                         if(data.result == 'success'){
-                            self.fnFileAdd(data.boardNo);
- 
+                            if($("#file1")[0].files[0] != undefined){
+                                self.fnFileAdd(data.boardNo);
+                            } else {
+                                alert("등록되었습니다!");
+                                location.href="/board/board/list.do";
+                            }
                         }
                     }
                 });
             },
+
             fnFileAdd : function(boardNo){
                 var self = this;
                 var form = new FormData();
                 form.append( "file1",  $("#file1")[0].files[0] );
                 form.append( "idx",  boardNo); // 임시 pk
                 self.upload(form);  
-            },
+            }
 
             // 파일 업로드
-            upload : function(form){
-                    var self = this;
+            , upload : function(form){
+                var self = this;
                 $.ajax({
-                    url : "http://localhost:8080/fileUpload.dox",
-                    type : "POST",
-                    processData : false,
-                    contentType : false,
-                    data : form,
-                    success:function(response) { 
-                        alert("등록됨!");
-                        location.href="/board/board-list.do";
+                    url : "/board/fileUpload.dox"
+                    , type : "POST"
+                    , processData : false
+                    , contentType : false
+                    , data : form
+                    , success:function(response) { 
+                        alert("등록 됨!");
+                        location.href="/board/board/list.do";
                     }	           
                 });
-            },
-            
+            }
         }, // methods
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
-             // Quill 에디터 초기화
+            // Quill 에디터 초기화
             var quill = new Quill('#editor', {
                 theme: 'snow',
                 modules: {
                     toolbar: [
                         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
                         ['bold', 'italic', 'underline'],
-                        [{ 'color': [] }, { 'background': [] }], 
+                        [{ 'color': [] }, { 'background': [] }],
                         [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                         ['link', 'image'],
-                        ['clean']
+                        ['clean'],
                     ]
                 }
             });
@@ -203,7 +206,6 @@
             quill.on('text-change', function() {
                 self.info.contents = quill.root.innerHTML;
             });
-            
         }
     });
 

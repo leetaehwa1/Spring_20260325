@@ -23,7 +23,7 @@
 	<insert id="insertUser" 
 			parameterType="hashmap">
 		INSERT INTO TBL_USER(USERID, PWD, USERNAME) VALUES(
-			#{userId}, #{pwd}, #{userName}
+			#{userId}, #{hashPwd}, #{userName}
 		)
 	</insert>
 	<insert id="insertUserFile" parameterType="hashmap">
