@@ -126,4 +126,13 @@
 			PROFNO = #{profNo}
 		WHERE STUNO = #{stuNo}
 	</update>
+	<update id="updateProf" parameterType="hashmap">
+		UPDATE PROFESSOR
+		SET
+			NAME = #{profName},
+			POSITION = #{position},
+			PAY = #{pay},
+			DEPTNO = #{deptNo}
+		WHERE PROFNO = #{profNo}
+	</update>
 </mapper>

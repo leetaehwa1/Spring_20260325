@@ -1,3 +1,6 @@
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +9,8 @@
     <title>Document</title>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="/js/page-change.js"></script>
+
     <style>
         table, tr, td, th{
             border : 1px solid black;
@@ -24,8 +29,16 @@
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
-        <h1>안녕?</h1>
-
+         <div>
+            사번 : <label><input v-model="info.empNo"></label>
+         </div>
+          <div>
+            이름 : <label><input v-model="info.eName"></label>
+         </div>
+          <div>
+            직급 : <label><input v-model="info.job"></label>
+         </div>
+         <button @click="fnAdd()">추가</button>
     </div>
 </body>
 </html>
@@ -35,20 +48,26 @@
         data() {
             return {
                 // 변수 - (key : value)
+                info:{
+                    empNo : "",
+                    eName : "",
+                    job : ""
+                }
             };
         },
         methods: {
             // 함수(메소드) - (key : function())
-            fnList: function () {
+            fnAdd: function () {
                 let self = this;
-                let param = {};
+                let param = self.info;
                 $.ajax({
-                    url: "",
+                    url: "http://localhost:8080/emp/add.dox",
                     dataType: "json",
                     type: "POST",
                     data: param,
                     success: function (data) {
-
+                        alert("등록되었습니다.");
+                        location.href="/emp-list.do";
                     }
                 });
             }
@@ -56,6 +75,7 @@
         mounted() {
             // 처음 시작할 때 실행되는 부분
             let self = this;
+            
         }
     });
 
