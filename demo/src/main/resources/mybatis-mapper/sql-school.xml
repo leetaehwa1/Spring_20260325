@@ -13,10 +13,24 @@
 		INNER JOIN DEPARTMENT D1 ON P.DEPTNO = D1.DEPTNO
 		INNER JOIN DEPARTMENT D2 ON D1.PART = D2.DEPTNO
 		WHERE 1=1
-		<if test="position != '' and position != null">
+		<if test="position != null and position != ''">
 			AND P.POSITION = #{position}
 		</if>
-		<if test="deptNo != '' and deptNo != null">
+		<if test="deptNo != null and deptNo != ''">
+			AND P.DEPTNO = #{deptNo}
+		</if>
+		LIMIT #{pageSize} OFFSET #{offSet}
+	</select>
+	<select id="selectProfCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*)
+		FROM PROFESSOR P 
+		INNER JOIN DEPARTMENT D1 ON P.DEPTNO = D1.DEPTNO
+		INNER JOIN DEPARTMENT D2 ON D1.PART = D2.DEPTNO
+		WHERE 1=1
+		<if test="position != null and position != ''">
+			AND P.POSITION = #{position}
+		</if>
+		<if test="deptNo != null and deptNo != ''">
 			AND P.DEPTNO = #{deptNo}
 		</if>
 	</select>

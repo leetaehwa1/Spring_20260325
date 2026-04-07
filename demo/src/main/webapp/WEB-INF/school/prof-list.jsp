@@ -24,11 +24,35 @@
         tr:nth-child(even){
             background-color: azure;
         }
+        #index{
+            text-decoration: none;
+            color: black;
+            padding: 3px;
+            margin: 3px;
+        }
+        #index {
+            text-decoration: none;
+        }
+        #index .active{
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        a{
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
     <div id="app">
         <!-- html 코드는 id가 app인 태그 안에서 작업 -->
+        <div>
+            <select v-model="pageSize" @change=" currentPage =1 ; fnGetList();">
+                <option value="5">5개씩</option>
+                <option value="10">10개씩</option>
+                <option value="20">20개씩</option>
+            </select>
+         </div>
+
          <div class="search-area">
             <label>직급 :
                 <select v-model="position" @change="fnGetList()">
@@ -66,6 +90,14 @@
                 <td>{{item.dName3}}</td>
             </tr>
          </table>
+          <div>
+            <a href="javascript:;" @click="currentPage -= 1; fnGetList();" v-if="currentPage != 1">◀</a>
+            <!-- <a @click="currentPage = num; fnGetList();" id="index" href="javascript:;" v-for="num in index" > -->
+            <a @click="fnPage(num)" id="index" href="javascript:;" v-for="num in index" >
+                <span :class="{active : currentPage == num}">{{num}}</span>
+            </a>
+            <a href="javascript:;" @click="currentPage += 1; fnGetList();" v-if="currentPage != index">▶</a>
+         </div>
          
         <div class="btn-area">
            <a href="/prof/add.do"><button>교수추가</button></a>
@@ -86,6 +118,10 @@
                 position : "",
                 deptNo: "",
                 selectProfNo : "",
+
+                pageSize : 5, // 한 페이지에 출력할 개수
+                index : 1, // 최대 페이지 수
+                currentPage : 1, // 현재 페이지
             };
         },
         methods: {
@@ -95,6 +131,9 @@
                 let param = {
                     position : self.position,
                     deptNo : self.deptNo,
+                    pageSize : self.pageSize,
+                    offSet : self.pageSize * (self.currentPage - 1),
+
                 };
                 $.ajax({
                     url: "http://localhost:8080/prof/list.dox",
@@ -105,6 +144,7 @@
                         console.log(data);
                         self.list = data.list;
                         self.deptList = data.deptList;
+                        self.index = Math.ceil(data.totalCount / self.pageSize);
                     }
                 });
             },
@@ -135,6 +175,11 @@
                 //     return;
                 // }
                 pageChange("/prof/view.do", {profNo : profNo})
+            },
+            fnPage : function(page){
+                let self = this;
+                self.currentPage = page;
+                self.fnGetList();
             }
         }, // methods
         mounted() {

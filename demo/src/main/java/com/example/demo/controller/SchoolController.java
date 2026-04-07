@@ -32,6 +32,10 @@ public class SchoolController {
 	@ResponseBody 
 	public String prof(Model model, @RequestParam HashMap<String, Object> map) throws Exception {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		int pageSize = map.get("pageSize") == null ? 5 : Integer.parseInt(map.get("pageSize").toString());
+		int offSet = map.get("offSet") == null ? 0 : Integer.parseInt(map.get("offSet").toString());
+		map.put("pageSize", pageSize);
+		map.put("offSet", offSet);
 		resultMap = schoolService.getProfList(map);
 		return new Gson().toJson(resultMap); 
 	}

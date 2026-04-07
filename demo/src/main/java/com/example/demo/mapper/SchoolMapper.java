@@ -14,16 +14,22 @@ public interface SchoolMapper {
 	public List<Professor>selectProfList(HashMap<String, Object> map);
 	public List<Student>selectStuList(HashMap<String, Object> map);
 	public List<Dept>selectDeptList(HashMap<String, Object> map);
+	
 	public int insertStu(HashMap<String, Object> map);
 	public int insertProf(HashMap<String, Object> map);
+	
 	public Student selectStu(HashMap<String, Object> map);
 	public Professor selectProf(HashMap<String, Object> map);
+	
 	public int deleteStu(HashMap<String, Object> map);
 	public int deleteAllStu(HashMap<String, Object> map);
 	public int deleteProf(HashMap<String, Object> map);
+	
 	public int updateStu(HashMap<String, Object> map);
 	public int updateProf(HashMap<String, Object> map);
 	
+	public int selectProfCount(HashMap<String,Object> map);
+} 
 
 
-}
+
